@@ -1,0 +1,24 @@
+services:
+  database:
+    container_name: linklian-database-dev
+    image: postgres:18
+    restart: unless-stopped
+    ports:
+      - "5412:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./databasepg:/var/lib/postgresql
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U admin -d ${DB_NAME}"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+    networks:
+      - linklian-net
+
+networks:
+  linklian-net:
+    external: true

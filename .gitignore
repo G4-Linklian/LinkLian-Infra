@@ -2,3 +2,8 @@ dev/.env
 dev/databasepg/
 prod/.env
 prod/databasepg/
+
+linklian-dev/.env
+linklian-dev/databasepg/
+linklian-prod/.env
+linklian-prod/databasepg/

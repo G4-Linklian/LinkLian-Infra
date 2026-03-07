@@ -1,6 +1,6 @@
 services:
   database:
-    container_name: linklian-database-dev
+    container_name: linklian-database-uat
     image: postgres:18
     restart: unless-stopped
     ports:

@@ -1,9 +1,9 @@
-dev/.env
-dev/databasepg/
+uat/.env
+uat/databasepg/
 prod/.env
 prod/databasepg/
 
-linklian-dev/.env
-linklian-dev/databasepg/
+linklian-uat/.env
+linklian-uat/databasepg/
 linklian-prod/.env
 linklian-prod/databasepg/

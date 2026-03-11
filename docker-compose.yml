@@ -1,24 +1,6 @@
-services:
-  # database:
-  #   container_name: linklian-database-uat
-  #   image: postgres:18
-  #   restart: unless-stopped
-  #   ports:
-  #     - "5412:5432"
-  #   environment:
-  #     POSTGRES_USER: ${DB_USER}
-  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
-  #     POSTGRES_DB: ${DB_NAME}
-  #   volumes:
-  #     - ./databasepg:/var/lib/postgresql/data
-  #   # healthcheck:
-  #   #   test: ["CMD-SHELL", "pg_isready -U admin -d ${DB_NAME}"]
-  #   #   interval: 10s
-  #   #   timeout: 5s
-  #   #   retries: 5
-  #   networks:
-  #     - linklian-net
+name: LinkLian-Infra
 
+services:
   linklian-redis:
     image: redis:7-alpine
     container_name: linklian-redis
@@ -37,11 +19,12 @@ services:
     image: hiett/serverless-redis-http:latest
     container_name: linklian-upstash-redis
     ports:
-      - "4001:80"
+      - "4001:8080"
     environment:
       SRH_MODE: env
       SRH_TOKEN: 12345678
       SRH_CONNECTION_STRING: redis://linklian-redis:6379
+      SRH_PORT: 8080
     depends_on:
       linklian-redis:
         condition: service_healthy
@@ -49,7 +32,3 @@ services:
 volumes:
   redis-data:
     driver: local
-
-networks:
-  linklian-net:
-    external: true

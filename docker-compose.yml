@@ -28,8 +28,7 @@ services:
       SRH_CONNECTION_STRING: redis://linklian-redis:6379
       SRH_PORT: 8080
     depends_on:
-      linklian-redis:
-        condition: service_healthy
+      - linklian-redis
     networks:
       - linklian-net
 

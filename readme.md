@@ -1,15 +1,13 @@
 # LinkLian Infrastructure
 
-## Database (PostgreSQL 18)
-
-This project runs PostgreSQL 18 via Docker Compose with separate configurations for **dev** and **prod** environments.
+This project provides Redis and Redis HTTP (for testing an Upstash-like HTTP gateway) via Docker Compose.
 
 ---
 
 ## Prerequisites
 
-- [Docker](https://www.docker.com/) and Docker Compose installed
-- Create the `linklian-net` Docker network once before starting:
+- [Docker](https://www.docker.com/) and Docker Compose
+- Create the Docker network `linklian-net` once before first use
 
 ```bash
 docker network create linklian-net
@@ -17,56 +15,50 @@ docker network create linklian-net
 
 ---
 
-## Environment Variables
+## Services
 
-Create a `.env` file in the same directory as the `docker-compose.yml` you intend to run:
+| Service | Container | Port (Host -> Container) | Details |
+|---|---|---|---|
+| Redis | linklian-redis | 6379 -> 6379 | Primary Redis with AOF enabled |
+| Redis HTTP | linklian-upstash-redis | 4001 -> 8080 | HTTP gateway for Redis |
 
-```env
-DB_USER=your_username
-DB_PASSWORD=your_password
-DB_NAME=your_database_name
+---
+
+## Getting Started
+
+```bash
+docker compose up -d
 ```
 
 ---
 
-## Starting the Database
+## Using Redis
 
-### Development
+### Connect via Redis Client
 
-```bash
-cd dev
-docker compose up -d
-```
+- Host: `localhost`
+- Port: `6379`
 
-- Container name: `linklian-database-dev`
-- Port: `5412` (host) → `5432` (container)
-- Data volume: `./dev/databasepg`
-
-### Production
+Example:
 
 ```bash
-cd prod
-docker compose up -d
+redis-cli -h localhost -p 6379
 ```
 
-- Container name: `linklian-database-prod`
-- Port: `5402` (host) → `5432` (container)
-- Data volume: `./prod/databasepg`
+### Connect via HTTP (Redis HTTP)
 
----
+- Base URL: `http://localhost:4001`
+- Token (default): `12345678`
 
-## Connecting to the Database
+Example with curl:
 
-| Environment | Host      | Port |
-|-------------|-----------|------|
-| Dev         | localhost | 5412 |
-| Prod        | localhost | 5402 |
-
-Example connection string:
-
+```bash
+curl -X POST "http://localhost:4001" \
+	-H "Authorization: Bearer 12345678" \
+	-d 'command=PING'
 ```
-postgresql://<DB_USER>:<DB_PASSWORD>@localhost:<PORT>/<DB_NAME>
-```
+
+> Note: To change the token, update `SRH_TOKEN` in [docker-compose.yml](docker-compose.yml)
 
 ---
 
@@ -74,14 +66,14 @@ postgresql://<DB_USER>:<DB_PASSWORD>@localhost:<PORT>/<DB_NAME>
 
 ```bash
 # View logs
-docker compose logs -f database
+docker compose logs -f
 
-# Stop the container
+# Stop all services
 docker compose stop
 
-# Stop and remove the container
+# Stop and remove containers
 docker compose down
 
-# Restart the container
-docker compose restart database
+# Restart a single service
+docker compose restart linklian-redis
 ```
